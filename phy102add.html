@@ -1,0 +1,468 @@
+
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PHY 102 Interactive Quiz</title>
+  <style>
+    :root{--bg:#0f172a;--card:#111827;--accent:#06b6d4;--muted:#94a3b8;--white:#e6eef6}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background: #1E1B4B;color:#FFFF;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:920px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;}
+    .meta{color:var(--muted);font-size:13px}
+    .card{background: #312E81;padding:20px;border-radius:12px;margin-top:18px;box-shadow:0 6px 24px rgba(2,6,23,0.6)}
+    .question{font-size:18px;margin-bottom:12px}
+    .choices{display:flex;flex-direction:column;gap:8px}
+    .choice{background: #4338CA;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .choice:hover{transform:translateY(-2px)}
+    .choice.selected{outline:3px solid rgba(6,182,212,0.12);background: #22D3EE;}
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+    button{background:#C084FC;color:#042029;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
+    .progress{height:10px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#22D3EE);width:0%}
+    .footer{margin-top:16px;color:var(--muted);font-size:13px}
+    .result{padding:18px;border-radius:10px;background:linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.6));}
+    .review{margin-top:12px}
+    .q-review{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;margin-bottom:10px}
+    @media(max-width:560px){.wrap{padding:12px}h1{font-size:18px}.question{font-size:16px}}
+    .timer{ 
+    color:#FBBF24;
+    
+    }
+    .span{
+        display:flex;
+        font-size: 25px ;
+        float:right;
+    }
+    .h1{
+        font-size:25px
+    }
+    
+    
+    
+    body.light-mode{
+  background:#f1f5f9;
+  color:#0f172a;
+}
+body.light-mode .card{background:#ffffff;}
+body.light-mode .choice{background:#e2e8f0;color:#0f172a;}
+body.light-mode .choice.selected{background:#3b82f6;color:white;}
+body.light-mode button{background:#22c55e;color:white;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1 class="h1">PHY 102 MCQs Interactive MCQ Quiz PRT1</h1>
+        <div class="meta">36 multiple-choice questions </div>
+ 
+                 <span class="span">Timer: <div class="timer" id="countdown-timer">15:00</div></span>
+      </div>
+    </header><div class="card" id="quiz-card">
+  <div class="progress" aria-hidden><i id="progress-bar"></i></div>
+  <div style="height:14px"></div>
+  <div id="q-area">
+    </div>
+
+  <div class="controls">
+    <div style="display:flex;gap:8px">
+      <button id="prevBtn" class="secondary">Previous</button>
+      <button id="nextBtn">Next</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button id="submitBtn" class="secondary">Submit</button>
+      <div style="color:var(--muted);font-size:13px">Q <span id="q-num">1</span> / <span id="q-total">10</span></div>
+    </div>
+  </div>
+
+  <div class="footer">Tip: Select an answer and press Next. You can review answers after submission.Quiz will submit automatically once timer turns zero.</div>
+</div>
+
+<div id="result-area" style="display:none" class="card">
+  <div class="result">
+    <h2 id="score-title"></h2>
+    <p id="score-summary" class="meta"></p>
+  </div>
+  <div class="review" id="review-list"></div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button id="retryBtn">Retake Quiz</button>
+    <button id="exportBtn" class="secondary">Export Results</button>
+  </div>
+</div>
+<br><br><br>
+  <a href="https://wa.me/+2349036795652"><button>Contact The Developer</button></a>
+    <a href="https://wa.me/+2349036795652"><button>Support Project</button></a><br><br>
+   <button onclick="shareOnWhatsApp()">Share Quiz link via WhatsApp</button>
+  <h2>Designed by Sanctum</h2>
+  </div>
+   <script>
+       
+       
+       
+       
+       
+       const QUESTIONS = [
+  {
+    q: "Calculate the resistance per unit length of a constantin wire of diameter 0.4mm (resistivity of constantin wire = 4.7 x 10^-5 ohm meter).",
+    c: ["347 ohm per metre", "437 ohm per metre", "374 ohm per metre", "734 ohm per metre"],
+    a: 2
+  },
+  {
+    q: "Two charges exert a force of 5N on each other, what will be the value of new force if one of the charges is doubled while the distance remains unchanged.",
+    c: ["5N", "2.5N", "10N", "20N"],
+    a: 2
+  },
+  {
+    q: "The charge on the plates of a capacitor is 5×10^-6 C while the potential difference across it 100V. What is the capacitance?",
+    c: ["5 x 10^-5 F", "2 x 10^-6 F", "2 x 10^-7 F", "5 x 10^-8 F"],
+    a: 3
+  },
+  {
+    q: "Calculate the work done on capacitor of capacitance 300μF when a potential difference of 1000V is applied to it.",
+    c: ["200J", "150J", "180J", "None of the options"],
+    a: 1
+  },
+  {
+    q: "Calculate the magnitude of the magnetic force, when the current is 2A and length is 100cm and the magnetic field strength is 0.5T perpendicular to the field.",
+    c: ["1N", "2N", "5N", "10N"],
+    a: 0
+  },
+  {
+    q: "Two resistors 6 ohm and 12 ohm in parallel are in series with a third resistor 8 ohm. Find the current in the 8 ohm resistor if the potential difference from the source is 24V.",
+    c: ["5A", "2A", "10A", "4A"],
+    a: 1
+  },
+  {
+    q: "Calculate the magnitude of the force experienced by a current carrying wire of length 200cm and current 2.0 A placed in a magnetic field of 0.5T if the field is perpendicular to the wire.",
+    c: ["2N", "1N", "5N", "10N"],
+    a: 0
+  },
+  {
+    q: "Calculate the length of a current carrying conductor if magnitude of the force experienced by current carrying wire is 5N, current is 5.0 A placed in a magnetic field of 0.5 T if the field is perpendicular to the wire.",
+    c: ["120cm", "250cm", "200cm", "150cm"],
+    a: 2
+  },
+  {
+    q: "Two charges exert a force of 5N on each other. Find force when the distance between them is halved.",
+    c: ["20N", "10N", "40N", "30N"],
+    a: 0
+  },
+  {
+    q: "If the potential difference across a capacitor is 120V and the distance of separation between them is 3mm. Find the electric field between the plates.",
+    c: ["45KN/C", "40KN/C", "55KN/C", "60KN/C"],
+    a: 1
+  },
+  {
+    q: "The amount of charge in a small region in space such that its dimension is negligible to the point of observation is",
+    c: ["Dielectric", "Electric charge", "Universal charge", "Point charge"],
+    a: 3
+  },
+  {
+    q: "Which law states that the sum of potential difference in a closed loop is zero.",
+    c: ["Ohm's law", "Kirchhoff's law", "None of the above", "Circuital law"],
+    a: 1
+  },
+  {
+    q: "If the charge in a capacitor is 5×10^-6C, and the potential difference across the plates is 100V, calculate the capacitance of the capacitor.",
+    c: ["5×10^-8F", "2×10^-7F", "2×10^-6F", "5×10^-6F"],
+    a: 0
+  },
+  {
+    q: "If the resistance of a boiling ring is 11ohms, the voltage is 220V, calculate energy dissipated in 2s and the power dissipated.",
+    c: ["8.5KJ, 4.4KW", "2.2KJ, 8.2KW", "8.8KJ, 4.4KW", "4.4KJ, 8.8KW"],
+    a: 2
+  },
+  {
+    q: "If the radius of a sphere is 0.5m and it enclosed a charge of 2uF. Find the electric flux on the surface of the sphere.",
+    c: ["4.52×10^5", "1.13×10^5", "2.26×10^5", "3.39×10^5"],
+    a: 2
+  },
+  {
+    q: "Two capacitors of capacitance of 3uF and 6uF are connected in series across a 400V, calculate the potential energy in 3uF capacitor.",
+    c: ["10.67×10^-2J", "7.5×10^-2J", "5.7×10^-2J", "6.75×10^-2J"],
+    a: 0
+  },
+  {
+    q: "Two resistors of 6ohms and 12Ω are connected in parallel and connected to a 8Ω resistor in series. A 24V voltage is passed through them, calculate the current passing through the 8Ω resistor.",
+    c: ["5A", "2A", "10A", "4A"],
+    a: 1
+  },
+  {
+    q: "Which of these 3 factors affect the capacitance of a capacitor?",
+    c: ["Temperature of a capacitor, separation of the capacitor and the material between the conductors", "Cross-sectional area of the capacitors, separation of the capacitor and the material between the conductors", "Length of the capacitor, separation of the capacitor and the material between the conductors", "Thickness of the capacitor plates, separation of the capacitor and the magnetism between the conductors"],
+    a: 1
+  },
+  {
+    q: "Two unit charges are separated by 1 m in air calculate the force between the charges.",
+    c: ["10^-9N", "9 x 10^9N", "9 x10^-19N", "9 x 10^-19N"],
+    a: 1
+  },
+  {
+    q: "If a force is exerted between 2 charges, and the distance between them is halved, what will happen to the force?",
+    c: ["Doubles", "Halves", "Quadruples"],
+    a: 2
+  },
+  {
+    q: "If resistors are connected in series, the current is?",
+    c: ["Dynamic", "Different", "Same"],
+    a: 2
+  },
+  {
+    q: "Two charges exert 5N on each other, what is the force when the distance between them is halved?",
+    c: ["15N", "10N", "5N", "20N"],
+    a: 3
+  },
+  {
+    q: "The ratio of electric charge to the potential difference across them is?",
+    c: ["Resistance", "Current", "Capacitance"],
+    a: 2
+  },
+  {
+    q: "Calculate the distance between Q1 and Q2 if their magnitude are 2×10^-6C and 3×10^-6C and force between them is 15N.",
+    c: ["10cm", "6cm", "12cm"],
+    a: 1
+  },
+  {
+    q: "If distance halved, electric potential is?",
+    c: ["Doubled", "Quadrupled", "Remains same", "Halved"],
+    a: 0
+  },
+  {
+    q: "Calculate the workdone on a capacitor of 300uF with potential difference of 1000V.",
+    c: ["160J", "200J", "180J", "None"],
+    a: 3
+  },
+  {
+    q: "If two unit charges are separated by 1m in air, the force on them is",
+    c: ["10^-9N", "9×10^19N", "9×10^9N", "9×10^-19N"],
+    a: 2
+  },
+  {
+    q: "What is the direction of electric field at a point near a negative charge",
+    c: ["Away from the charge", "Depend on the magnitude of the charge", "Perpendicular to the charge", "Toward the charge"],
+    a: 3
+  },
+  {
+    q: "The ratio of charge to potential difference (voltage) between or across plate of capacitors is:",
+    c: ["energy", "capacitance of a capacitor", "resistance of a resistor", "potential difference"],
+    a: 1
+  },
+  {
+    q: "What law explains the magnetic field by constant electric current?",
+    c: ["Ampere's law", "Gauss's law", "Biot-Savart law", "Lenz law"],
+    a: 0
+  },
+  {
+    q: "The term used to describe two charges equal in magnitude but opposite in sign is?",
+    c: ["Dipole", "Dipole moment", "Electric field", "Coulomb pair"],
+    a: 0
+  },
+  {
+    q: "Calculate the resistance per unit length given diameter to be 0.4mm and resistivity equals 4.70 x 10^-5Ωm",
+    c: ["0.375Ω/m", "0.25Ω/m", "0.5Ω/m", "0.1Ω/m"],
+    a: 0
+  },
+  {
+    q: "Magnetic force is a ______ quantity",
+    c: ["Scalar", "Vector", "Fundamental", "Partly scalar and partly vector"],
+    a: 1
+  },
+  {
+    q: "The amount of charge covering a small region in space such that its dimensions are negligible compared to the point of observation is?",
+    c: ["Electric charge", "Universal charge", "Dielectrics", "Point charges"],
+    a: 3
+  },
+  {
+    q: "Two capacitors 3uF and 6uF are connected in series to a 400V battery. What is the charge?",
+    c: ["800uC", "1200uC", "400uC", "600uC"],
+    a: 0
+  },
+  {
+    q: "Sum of potential difference in a close loop in a circuit must be zero. This is called?",
+    c: ["Kirchhoff's voltage Law", "Ohm's Law", "Ampere's Law"],
+    a: 0
+  }
+];
+       
+
+
+ 
+function shareOnWhatsApp() {
+  const message = "https://generalhealthandwellness.com/category/questions-interactive-quiz-guide";
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = "whatsapp://send?text=" + encodedMessage;
+  window.open(whatsappUrl, '_blank');
+}
+
+let state = { idx: 0, answers: Array(QUESTIONS.length).fill(null) };
+const total = QUESTIONS.length;
+
+function renderQuestion() {
+  const area = document.getElementById('q-area');
+  const q = QUESTIONS[state.idx];
+  document.getElementById('q-num').textContent = state.idx + 1;
+  document.getElementById('q-total').textContent = total;
+  const progress = Math.round((state.idx / total) * 100);
+  document.getElementById('progress-bar').style.width = progress + '%';
+
+  area.innerHTML = '';
+  const qEl = document.createElement('div');
+  qEl.innerHTML = `<div class="question">${state.idx + 1}. ${q.q}</div>`;
+  const choices = document.createElement('div');
+  choices.className = 'choices';
+
+  q.c.forEach((choice, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.textContent = String.fromCharCode(65 + i) + '. ' + choice;
+    if (state.answers[state.idx] === i) btn.classList.add('selected');
+
+    btn.addEventListener('click', () => {
+      state.answers[state.idx] = i;
+      document.querySelectorAll('.choice').forEach(el => el.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+
+    choices.appendChild(btn);
+  });
+
+  qEl.appendChild(choices);
+  area.appendChild(qEl);
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (state.idx < total - 1) state.idx++;
+  renderQuestion();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (state.idx > 0) state.idx--;
+  renderQuestion();
+});
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const unanswered = state.answers.filter(a => a === null).length;
+  if (unanswered > 0) {
+    if (!confirm(`You have ${unanswered} unanswered questions. Submit anyway?`)) return;
+  }
+  gradeQuiz();
+});
+
+function gradeQuiz() {
+  clearInterval(timerInterval); // stop timer
+
+  let correct = 0;
+  const review = [];
+
+  for (let i = 0; i < total; i++) {
+    const user = state.answers[i];
+    const correctIdx = QUESTIONS[i].a;
+    const ok = user === correctIdx;
+    if (ok) correct++;
+    review.push({ i, q: QUESTIONS[i].q, choices: QUESTIONS[i].c, user, correctIdx, ok });
+  }
+
+  showResult(correct, review);
+}
+
+function showResult(score, review) {
+  document.getElementById('quiz-card').style.display = 'none';
+  const area = document.getElementById('result-area');
+  area.style.display = 'block';
+
+  document.getElementById('score-title').textContent = `You scored ${score} out of ${total}`;
+  const pct = Math.round((score / total) * 100);
+  document.getElementById('score-summary').textContent = `Percentage: ${pct}%`;
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  review.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'q-review';
+    const head = document.createElement('div');
+    head.style.fontWeight = '700';
+    head.textContent = `${item.i + 1}. ${item.q}`;
+    const userAns = document.createElement('div');
+    const ua = item.user === null ? 'No answer' : String.fromCharCode(65 + item.user) + '. ' + item.choices[item.user];
+    const ca = String.fromCharCode(65 + item.correctIdx) + '. ' + item.choices[item.correctIdx];
+    userAns.innerHTML = `<div><strong>Your answer:</strong> ${ua}</div><div><strong>Correct:</strong> ${ca}</div>`;
+    userAns.style.color = item.ok ? 'lightgreen' : '#fca5a5';
+    div.appendChild(head);
+    div.appendChild(userAns);
+    list.appendChild(div);
+  });
+}
+
+/* ---------------- TIMER ---------------- */
+let totalSeconds = 15* 60; 
+const countdownEl = document.getElementById('countdown-timer');
+let timerInterval = null;
+let warned = false;
+
+//  Warning sound
+function playWarningSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  osc.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.5);
+}
+
+function startCountdown() {
+  timerInterval = setInterval(() => {
+    let mins = Math.floor(totalSeconds / 60);
+    let secs = totalSeconds % 60;
+    countdownEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    totalSeconds--;
+
+    if (totalSeconds === 300 && !warned) { // 5 minutes left
+      playWarningSound();
+      alert("⚠️ 5 minutes remaining!");
+      warned = true;
+    }
+
+    if (totalSeconds < 0) {
+      clearInterval(timerInterval);
+      gradeQuiz();
+    }
+  }, 1000);
+}
+
+/* ---------------- LIGHT MODE ---------------- */
+const toggleBtn = document.createElement("button");
+toggleBtn.textContent = "☀️";
+toggleBtn.style.marginLeft = "10px";
+document.querySelector("header").appendChild(toggleBtn);
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+});
+
+/* Reset */
+document.getElementById('retryBtn')?.addEventListener('click', () => {
+  state = { idx: 0, answers: Array(total).fill(null) };
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('quiz-card').style.display = 'block';
+  totalSeconds = 45 * 60;
+  warned = false;
+  renderQuestion();
+  startCountdown();
+});
+
+renderQuestion();
+window.addEventListener('load', startCountdown);
+</script>
+      
+</body>
+</html>
+
